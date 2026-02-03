@@ -1,0 +1,3 @@
+In my interactive p5.js sketch, I used simple shapes to create a cat watching the night sky and added interaction through mouse movement. Randomly moving stars adds life to the scene while the moon moving with the mouse adds interaction.
+
+The AI-generated sketch captured the general idea of a cat and a night scene, but it lacked wuality and detail. While it was useful as a reference for basic structure, it did not include random movement, text, or meaningful interaction beyond eye tracking. This showed me that Gen AI can help with starting ideas, but human creativity and understanding of requirements are still essential for producing a complete, expressive, and intentional artwork.
