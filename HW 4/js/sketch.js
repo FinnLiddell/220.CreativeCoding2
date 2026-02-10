@@ -37,6 +37,17 @@ function draw() {
     background(120, 170, 220);
   }
 
+  fill(0);
+  textSize(32);
+  text("My Favorite Food: Pizza", 20, 40);
+
+  // NAME (lower-right)
+  textSize(16);
+  text("Your Name", width - 150, height - 20);
+
+  // Static images
+  image(food1, 50, 100, 200, 150);
+  image(food2, 300, 100, 200, 150);
 
   fill(255);
   textSize(18);
