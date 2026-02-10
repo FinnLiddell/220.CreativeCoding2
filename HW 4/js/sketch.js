@@ -1,6 +1,21 @@
 let stars = [];
 let night = true;
 
+let food1;
+let food2;
+let foodAI;
+let titleFont;
+
+function preload() {
+  // Images
+  food1 = loadImage("images/pizza1.jpg");
+  food2 = loadImage("images/pizza2.png");
+  foodAI = loadImage("images/ai-pizza.png");
+
+  // Custom font
+  titleFont = loadFont("assets/titleFont.ttf");
+}
+
 function setup() {
   createCanvas(600, 600);
 
