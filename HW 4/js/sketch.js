@@ -34,3 +34,5 @@ function draw() {
   // Static images
   image(food1, 50, 100, 200, 150);
   image(food2, 300, 100, 200, 150);
+  
+}
