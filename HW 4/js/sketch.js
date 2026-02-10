@@ -48,15 +48,6 @@ function draw() {
   // Static images
   image(food1, 50, 100, 200, 150);
   image(food2, 300, 100, 200, 150);
-
-  fill(255);
-  textSize(18);
-  text("Night Watcher", 20, 30);
-
- 
-  textSize(12);
-  text("Finn Liddell", width - 100, height - 20);
-
   
   fill(180);
   rect(100, 80, 400, 300);
