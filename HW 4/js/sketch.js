@@ -17,15 +17,6 @@ function setup() {
 function draw() {
     background(30, 40, 70);
 
-
-  fill(255);
-  textSize(18);
-  text("Night Watcher", 20, 30);
-
- 
-  textSize(12);
-  text("Finn Liddell", width - 100, height - 20);
-
   
   fill(180);
   rect(100, 80, 400, 300);
@@ -66,6 +57,17 @@ function draw() {
   fill(160);
   rect(90, 400, 420, 20);
   
+    fill(0);
+  textSize(32);
+  text("My Favorite Food: Pizza", 20, 40);
+
+  textSize(16);
+  text("Finn Liddell", width - 150, height - 20);
+
+  image(food1, 50, 100, 200, 150);
+  image(food2, 300, 100, 200, 150);
+  
+  
   let food1, food2, foodAI;
 let titleFont;
 
@@ -82,7 +84,7 @@ function preload() {
   food2 = loadImage("images/pizza2.jpg");
   foodAI = loadImage("images/ai-pizza.png");
 
- 
+  // Custom font
   titleFont = loadFont("assets/titleFont.ttf");
 }
 
@@ -94,16 +96,13 @@ function setup() {
 function draw() {
   background(240);
 
-  // TITLE (upper-left)
   fill(0);
   textSize(32);
   text("My Favorite Food: Pizza", 20, 40);
 
-  // NAME (lower-right)
   textSize(16);
   text("Your Name", width - 150, height - 20);
 
-  // Static images
   image(food1, 50, 100, 200, 150);
   image(food2, 300, 100, 200, 150);
 
