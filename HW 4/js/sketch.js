@@ -4,10 +4,6 @@ let titleFont;
 let xPos = 0;
 let moveRight = true;
 
-// TIMER variable
-let lastMoveTime = 0;
-let moveInterval = 1000; // move every 1 second
-
 function preload() {
   // Images
   food1 = loadImage("images/pizza1.jpg");
