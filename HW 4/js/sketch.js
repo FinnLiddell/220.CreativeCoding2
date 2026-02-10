@@ -15,7 +15,7 @@ function preload() {
   foodAI = loadImage("images/ai-pizza.png");
 
   // Custom font
-  titleFont = loadFont("assets/titleFont.ttf");
+  titleFont = loadFont("assets/PlayfulTime-BLBB8.ttf");
 }
 
 function setup() {
