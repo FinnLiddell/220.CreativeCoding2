@@ -1,15 +1,6 @@
 let stars = [];
 let night = true;
 
-let food1;
-let food2;
-let foodAI;
-let titleFont;
-
-function preload() {
-
-}
-
 function setup() {
   createCanvas(600, 600);
 
@@ -31,15 +22,16 @@ function draw() {
     background(120, 170, 220);
   }
 
-  fill(0);
-  textSize(32);
-  text("My Favorite Food: Pizza", 20, 40);
 
-  // NAME (lower-right)
-  textSize(16);
-  text("Your Name", width - 150, height - 20);
+  fill(255);
+  textSize(18);
+  text("Night Watcher", 20, 30);
 
  
+  textSize(12);
+  text("Finn Liddell", width - 100, height - 20);
+
+  
   fill(180);
   rect(100, 80, 400, 300);
 
