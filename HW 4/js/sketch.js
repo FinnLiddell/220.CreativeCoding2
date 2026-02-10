@@ -9,7 +9,7 @@ let titleFont;
 function preload() {
   // Images
   food1 = loadImage("images/pizza1.jpg");
-  food2 = loadImage("images/pizza2.png");
+  food2 = loadImage("images/pizza2.jpg");
   foodAI = loadImage("images/ai-pizza.png");
 
   // Custom font
