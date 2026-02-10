@@ -1,85 +1,73 @@
-/*
-Generative AI / External resource reflection is in README.md.
-This sketch loads three images, one of which is a generative-AI-produced image (see README).
-Movement of the central image is controlled by a timer (setInterval) which updates the target
-position every 1200ms; the image moves smoothly towards the target using interpolation.
-Custom font is loaded from a hosted open-source font and used for the title and author.
-*/
+let stars = [];
+let night = true;
 
-let titleFont;
-let imgs = [];
-let moverX, moverY;
-let targetX, targetY;
-const TIMER_MS = 1200;
+function setup() {
+  createCanvas(600, 600);
 
-function preload(){
-  // Load a hosted open-source font (Lobster). Using the raw GitHub URL so it's loaded as an asset.
-  titleFont = loadFont('https://github.com/google/fonts/raw/main/ofl/lobster/Lobster-Regular.ttf');
-
-  // Three images from the local `images/` folder — two photos and one AI-generated image.
-  const urls = [
-    'images/pizza1.jpg',
-    'images/pizza2.jpg',
-    'images/ai-pizza.png'
-  ];
-
-  for (let u of urls) imgs.push(loadImage(u));
+ 
+  for (let i = 0; i < 30; i++) {
+    stars.push({
+      x: random(width),
+      y: random(height / 2),
+      size: random(2, 5)
+    });
+  }
 }
 
-function setup(){
-  createCanvas(windowWidth, windowHeight);
-  textFont(titleFont);
-  imageMode(CORNER);
-  // initial mover position in center
-  moverX = width/2;
-  moverY = height/2 + 80;
-  targetX = moverX;
-  targetY = moverY;
+function draw() {
+  
+  if (night) {
+    background(30, 40, 70);
+  } else {
+    background(120, 170, 220);
+  }
 
-  // Timer-driven movement: update the target location every TIMER_MS milliseconds
-  setInterval(() => {
-    updateTarget();
-  }, TIMER_MS);
-}
 
-function draw(){
-  background(250, 245, 240);
+  fill(255);
+  textSize(18);
+  text("Night Watcher", 20, 30);
 
-  // Title
-  fill(30, 30, 30);
-  textAlign(CENTER, TOP);
-  textSize(56);
-  text('My Favorite Food', width/2, 24);
+ 
+  textSize(12);
+  text("Finn Liddell", width - 100, height - 20);
 
-  // Author name in same custom font but smaller
-  textSize(20);
-  text('By Your Name', width/2, 92);
+  
+  fill(180);
+  rect(100, 80, 400, 300);
 
-  // Left static image (photo)
-  if (imgs[0]) image(imgs[0], 40, 140, 320, 220);
 
-  // Right static image (photo)
-  if (imgs[1]) image(imgs[1], width - 360, 140, 320, 220);
+  fill(50, 80, 130);
+  rect(110, 90, 180, 130);
+  rect(310, 90, 180, 130);
+  rect(110, 230, 180, 130);
+  rect(310, 230, 180, 130);
 
-  // Smooth movement for the central image that was triggered by the timer
-  moverX = lerp(moverX, targetX, 0.06);
-  moverY = lerp(moverY, targetY, 0.06);
+  fill(255);
+  for (let s of stars) {
+    ellipse(s.x, s.y, s.size);
+    s.y += random(-0.5, 0.5);
+    s.x += random(-0.5, 0.5);
+  }
 
-  if (imgs[2]) image(imgs[2], moverX - 150, moverY - 100, 300, 200);
+  
+  fill(240, 240, 200);
+  ellipse(mouseX, mouseY, 50);
 
-  // Small instructions
-  textSize(14);
-  textAlign(LEFT, BOTTOM);
-  fill(80);
-  text('The center image moves to a new random location every ' + (TIMER_MS/1000) + 's (timer-driven).', 24, height - 24);
-}
 
-function updateTarget(){
-  // pick a new constrained location (so the image stays on-screen)
-  targetX = random(200, max(400, width - 200));
-  targetY = random(200, max(300, height - 200));
-}
+  fill(120);
+  ellipse(300, 420, 160, 100);
 
-function windowResized(){
-  resizeCanvas(windowWidth, windowHeight);
+ 
+  ellipse(300, 350, 100, 80);
+
+
+  triangle(260, 320, 280, 270, 300, 320);
+  triangle(340, 320, 320, 270, 300, 320);
+
+
+  rect(360, 430, 70, 15, 10);
+
+  
+  fill(160);
+  rect(90, 400, 420, 20);
 }
