@@ -16,12 +16,11 @@ function preload(){
   // Load a hosted open-source font (Lobster). Using the raw GitHub URL so it's loaded as an asset.
   titleFont = loadFont('https://github.com/google/fonts/raw/main/ofl/lobster/Lobster-Regular.ttf');
 
-  // Three images (URLs) — two photographic, one generative-AI image.
+  // Three images from the local `images/` folder — two photos and one AI-generated image.
   const urls = [
-    'https://images.unsplash.com/photo-1542281286-9e0a16bb7366?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80',
-    // Example AI-generated image hosted externally (see README for source/prompt)
-    'https://images.unsplash.com/photo-1604908176994-8f4b5a6f2b60?auto=format&fit=crop&w=800&q=80'
+    'images/pizza1.jpg',
+    'images/pizza2.jpg',
+    'images/ai-pizza.png'
   ];
 
   for (let u of urls) imgs.push(loadImage(u));
