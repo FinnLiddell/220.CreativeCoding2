@@ -38,22 +38,3 @@ function draw() {
   // Static images
   image(food1, 50, 100, 200, 150);
   image(food2, 300, 100, 200, 150);
-
-  // TIMER-BASED movement
-  if (millis() - lastMoveTime > moveInterval) {
-    if (moveRight) {
-      xPos += 50;
-    } else {
-      xPos -= 50;
-    }
-
-    if (xPos > width - 200 || xPos < 0) {
-      moveRight = !moveRight;
-    }
-
-    lastMoveTime = millis();
-  }
-
-  // Moving AI image
-  image(foodAI, xPos, 350, 200, 150);
-}
