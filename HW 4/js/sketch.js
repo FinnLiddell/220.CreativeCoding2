@@ -1,23 +1,5 @@
 let stars = [];
 let night = true;
-  let food1, food2, foodAI;
-let titleFont;
-
-let xPos = 0;
-let moveRight = true;
-
-function preload() {
- 
-  food1 = loadImage("images/pizza1.jpg");
-  food2 = loadImage("images/pizza2.jpg");
-  foodAI = loadImage("images/ai-pizza.png");
-
-  // Custom font
-  titleFont = loadFont("assets/PlayfulTime-BLBB8.ttf");
-}
-
-let lastMoveTime = 0;
-let moveInterval = 1000; 
 
 function setup() {
   createCanvas(600, 600);
@@ -33,7 +15,21 @@ function setup() {
 }
 
 function draw() {
+  
+  if (night) {
     background(30, 40, 70);
+  } else {
+    background(120, 170, 220);
+  }
+
+
+  fill(255);
+  textSize(18);
+  text("Night Watcher", 20, 30);
+
+ 
+  textSize(12);
+  text("Finn Liddell", width - 100, height - 20);
 
   
   fill(180);
@@ -74,72 +70,4 @@ function draw() {
   
   fill(160);
   rect(90, 400, 420, 20);
-  
-    fill(0);
-  textSize(32);
-  text("My Favorite Food: Pizza", 20, 40);
-
-  textSize(16);
-  text("Finn Liddell", width - 150, height - 20);
-
-  image(food1, 50, 100, 200, 150);
-  image(food2, 300, 100, 200, 150);
-  
-  
-  let food1, food2, foodAI;
-let titleFont;
-
-let xPos = 0;
-let moveRight = true;
-
-
-let lastMoveTime = 0;
-let moveInterval = 1000; 
-
-function preload() {
- 
-  food1 = loadImage("images/pizza1.jpg");
-  food2 = loadImage("images/pizza2.jpg");
-  foodAI = loadImage("images/ai-pizza.png");
-
-  // Custom font
-  titleFont = loadFont("assets/titleFont.ttf");
-}
-
-function setup() {
-  createCanvas(800, 600);
-  textFont(titleFont);
-}
-
-function draw() {
-  background(240);
-
-  fill(0);
-  textSize(32);
-  text("My Favorite Food: Pizza", 20, 40);
-
-  textSize(16);
-  text("Your Name", width - 150, height - 20);
-
-  image(food1, 50, 100, 200, 150);
-  image(food2, 300, 100, 200, 150);
-
-  // TIMER-BASED movement
-  if (millis() - lastMoveTime > moveInterval) {
-    if (moveRight) {
-      xPos += 50;
-    } else {
-      xPos -= 50;
-    }
-
-    if (xPos > width - 200 || xPos < 0) {
-      moveRight = !moveRight;
-    }
-
-    lastMoveTime = millis();
-  }
-
-  // Moving AI image
-  image(foodAI, xPos, 350, 200, 150);
-}
 }
