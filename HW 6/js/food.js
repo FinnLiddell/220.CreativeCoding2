@@ -10,20 +10,16 @@ class Food {
 
     let s = this.size;
 
-    // Cup body
     fill(this.cupColor);
     rectMode(CENTER);
     rect(this.x, this.y, s * 0.6, s);
 
-    // Coffee top
     fill(90, 50, 20);
     ellipse(this.x, this.y - s/2, s * 0.6, s * 0.2);
 
-    // Sleeve
     fill(180, 120, 70);
     rect(this.x, this.y + s * 0.1, s * 0.6, s * 0.3);
 
-    // Handle
     noFill();
     stroke(this.cupColor);
     strokeWeight(3);
