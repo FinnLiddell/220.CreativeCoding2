@@ -1,26 +1,40 @@
 class Food {
-  constructor(x, y, size, color) {
+  constructor(x, y, size, cupColor) {
     this.x = x;
     this.y = y;
     this.size = size;
-    this.color = color;
+    this.cupColor = cupColor;
   }
 
   display() {
-    fill(this.color);
 
-    // Base pastry
-    ellipse(this.x, this.y, this.size);
+    let s = this.size;
 
-    // Frosting layer
-    fill(255, 200, 200);
+    // Cup body
+    fill(this.cupColor);
+    rectMode(CENTER);
+    rect(this.x, this.y, s * 0.6, s);
+
+    // Coffee top
+    fill(90, 50, 20);
+    ellipse(this.x, this.y - s/2, s * 0.6, s * 0.2);
+
+    // Sleeve
+    fill(180, 120, 70);
+    rect(this.x, this.y + s * 0.1, s * 0.6, s * 0.3);
+
+    // Handle
+    noFill();
+    stroke(this.cupColor);
+    strokeWeight(3);
     arc(
-      this.x,
-      this.y - this.size * 0.1,
-      this.size,
-      this.size * 0.8,
-      PI,
-      TWO_PI
+      this.x + s * 0.35,
+      this.y - s * 0.1,
+      s * 0.5,
+      s * 0.6,
+      -HALF_PI,
+      HALF_PI
     );
+    noStroke();
   }
 }
