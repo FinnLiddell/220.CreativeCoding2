@@ -25,7 +25,6 @@ function setup() {
 
   currentFrames = idleFrames;
 
-  // Create 5 food objects
   for (let i = 0; i < 5; i++) {
     let f = new Food(
       random(50, width - 50),
@@ -44,7 +43,6 @@ function draw() {
   updateAnimation();
   displayCharacter();
 
-  // Display all food objects
   for (let i = 0; i < foods.length; i++) {
     foods[i].display();
   }
