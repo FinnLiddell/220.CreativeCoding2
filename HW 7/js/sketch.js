@@ -1,3 +1,13 @@
+let score = 0;
+let gameTime = 60; // seconds
+let startTime;
+let gameState = "playing"; // "playing" or "gameOver"
+
+let foodImg;
+let foodX, foodY;
+let foodMoveTimer = 0;
+let foodMoveInterval = 120; // frames
+
 let idleFrames = [];
 let walkFrames = [];
 
