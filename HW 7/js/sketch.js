@@ -1,4 +1,3 @@
-// ===== Animation Arrays =====
 let idleFrames = [];
 let walkFrames = [];
 let currentFrames;
@@ -7,34 +6,30 @@ let frameIndex = 0;
 let animationTimer = 0;
 let animationSpeed = 8;
 
-// ===== Character =====
 let characterX = 300;
 let characterY = 250;
 let moveSpeed = 4;
 let moving = false;
 
-// ===== Food =====
 let foodImg;
 let foodX;
 let foodY;
 let foodMoveTimer = 0;
-let foodMoveInterval = 120; // frames
+let foodMoveInterval = 120;
 
-// ===== Game State =====
 let score = 0;
-let gameTime = 60; // seconds
+let gameTime = 60;
 let startTime;
 let gameState = "playing";
 
 function preload() {
-  // Character animations
+
   idleFrames[0] = loadImage("images/idle1.png");
   idleFrames[1] = loadImage("images/idle2.png");
 
   walkFrames[0] = loadImage("images/walk1.png");
   walkFrames[1] = loadImage("images/walk2.png");
 
-  // Food image
   foodImg = loadImage("images/coffee.png");
 }
 
@@ -78,10 +73,6 @@ function draw() {
   }
 }
 
-// ===========================
-// CHARACTER MOVEMENT
-// ===========================
-
 function handleMovement() {
   moving = false;
 
@@ -105,7 +96,6 @@ function handleMovement() {
     moving = true;
   }
 
-  // Keep character inside canvas
   characterX = constrain(characterX, 50, width - 50);
   characterY = constrain(characterY, 50, height - 50);
 
@@ -115,10 +105,6 @@ function handleMovement() {
     currentFrames = idleFrames;
   }
 }
-
-// ===========================
-// ANIMATION
-// ===========================
 
 function updateAnimation() {
   animationTimer++;
@@ -134,10 +120,6 @@ function displayCharacter() {
   imageMode(CENTER);
   image(currentFrames[frameIndex], characterX, characterY, 100, 100);
 }
-
-// ===========================
-// FOOD LOGIC
-// ===========================
 
 function updateFood() {
 
@@ -157,10 +139,6 @@ function moveFood() {
   foodY = random(50, height - 50);
 }
 
-// ===========================
-// COLLISION
-// ===========================
-
 function checkCollision() {
 
   let d = dist(characterX, characterY, foodX, foodY);
@@ -170,10 +148,6 @@ function checkCollision() {
     moveFood();
   }
 }
-
-// ===========================
-// SCORE + TIMER
-// ===========================
 
 function displayScoreAndTimer() {
 
