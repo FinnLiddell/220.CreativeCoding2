@@ -1,84 +1,96 @@
+// ===== ANIMATION =====
+let idleFrames = [];
+let walkFrames = [];
+let currentFrames;
+
+let frameIndex = 0;
+let animationTimer = 0;
+let animationSpeed = 8;
+
 // ===== PLAYER =====
 let player;
 
-// ===== ANIMATION =====
-let idleAnim;
-let walkAnim;
-
 // ===== GROUPS =====
-let goodGroup;
-let badGroup;
-let obstacleGroup;
+let goodFood;
+let badFood;
+let obstacles;
 
 // ===== GAME DATA =====
 let score = 0;
 let health = 5;
 let gameState = "playing";
 
+// ===== IMAGES =====
+let goodImg;
+let badImg;
+let obstacleImg;
+
 function preload() {
 
-  idleAnim = loadAnimation(
-    "images/idle1.png",
-    "images/idle2.png"
-  );
+  // character animations
+  idleFrames[0] = loadImage("images/idle1.png");
+  idleFrames[1] = loadImage("images/idle2.png");
 
-  walkAnim = loadAnimation(
-    "images/walk1.png",
-    "images/walk2.png"
-  );
+  walkFrames[0] = loadImage("images/walk1.png");
+  walkFrames[1] = loadImage("images/walk2.png");
+
+  // food + obstacle images
+  goodImg = loadImage("images/goodCoffee.png");
+  badImg = loadImage("images/badCoffee.png");
+  obstacleImg = loadImage("images/obstacle.png");
 }
 
 function setup() {
-  createCanvas(600, 400);
+  new Canvas(600, 400);
 
   // PLAYER
-  player = createSprite(300, 200, 50, 50);
-  player.addAnimation("idle", idleAnim);
-  player.addAnimation("walk", walkAnim);
-  player.changeAnimation("idle");
+  player = new Sprite(300, 200, 60, 60);
+  player.img = idleFrames[0];
 
   // GROUPS
-  goodGroup = new Group();
-  badGroup = new Group();
-  obstacleGroup = new Group();
+  goodFood = new Group();
+  badFood = new Group();
+  obstacles = new Group();
 
-  // GOOD ITEMS
+  // GOOD FOOD
   for (let i = 0; i < 5; i++) {
-    let g = createSprite(random(width), random(height), 30, 30);
-    g.shapeColor = "green";
-    goodGroup.add(g);
+    let g = new Sprite(random(width), random(height), 40, 40);
+    g.img = goodImg;
+    goodFood.add(g);
   }
 
-  // BAD ITEMS
+  // BAD FOOD
   for (let i = 0; i < 3; i++) {
-    let b = createSprite(random(width), random(height), 30, 30);
-    b.shapeColor = "red";
-    badGroup.add(b);
+    let b = new Sprite(random(width), random(height), 40, 40);
+    b.img = badImg;
+    badFood.add(b);
   }
 
   // OBSTACLES
   for (let i = 0; i < 3; i++) {
-    let o = createSprite(random(width), random(height), 80, 40);
-    o.shapeColor = "gray";
-    o.immovable = true;
-    obstacleGroup.add(o);
+    let o = new Sprite(random(width), random(height), 80, 50);
+    o.img = obstacleImg;
+    o.collider = "static";
+    obstacles.add(o);
   }
 }
 
 function draw() {
 
-  background(220);
+  background(230, 220, 200);
 
   if (gameState === "playing") {
 
     handleMovement();
+    updateAnimation();
+
+    // apply animation frame
+    player.img = currentFrames[frameIndex];
 
     // collisions
-    player.collide(obstacleGroup);
-    player.overlap(goodGroup, collectGood);
-    player.overlap(badGroup, hitBad);
-
-    drawSprites();
+    player.collide(obstacles);
+    player.overlaps(goodFood, collectGood);
+    player.overlaps(badFood, hitBad);
 
     displayUI();
     checkGameState();
@@ -93,47 +105,56 @@ function draw() {
 // ===== MOVEMENT =====
 function handleMovement() {
 
-  player.velocity.x = 0;
-  player.velocity.y = 0;
+  player.vel.x = 0;
+  player.vel.y = 0;
 
   let moving = false;
 
-  if (keyDown("LEFT_ARROW") || keyDown("a")) {
-    player.velocity.x = -4;
+  if (kb.pressing("left") || kb.pressing("a")) {
+    player.vel.x = -3;
     moving = true;
   }
-  if (keyDown("RIGHT_ARROW") || keyDown("d")) {
-    player.velocity.x = 4;
+  if (kb.pressing("right") || kb.pressing("d")) {
+    player.vel.x = 3;
     moving = true;
   }
-  if (keyDown("UP_ARROW") || keyDown("w")) {
-    player.velocity.y = -4;
+  if (kb.pressing("up") || kb.pressing("w")) {
+    player.vel.y = -3;
     moving = true;
   }
-  if (keyDown("DOWN_ARROW") || keyDown("s")) {
-    player.velocity.y = 4;
+  if (kb.pressing("down") || kb.pressing("s")) {
+    player.vel.y = 3;
     moving = true;
   }
 
   if (moving) {
-    player.changeAnimation("walk");
+    currentFrames = walkFrames;
   } else {
-    player.changeAnimation("idle");
+    currentFrames = idleFrames;
   }
 }
 
-// ===== GOOD =====
-function collectGood(player, item) {
-  score++;
-  item.position.x = random(width);
-  item.position.y = random(height);
+// ===== ANIMATION =====
+function updateAnimation() {
+
+  animationTimer++;
+
+  if (animationTimer >= animationSpeed) {
+    frameIndex++;
+    frameIndex %= currentFrames.length;
+    animationTimer = 0;
+  }
 }
 
-// ===== BAD =====
+// ===== COLLISION FUNCTIONS =====
+function collectGood(player, item) {
+  score++;
+  item.pos = { x: random(width), y: random(height) };
+}
+
 function hitBad(player, item) {
   health--;
-  item.position.x = random(width);
-  item.position.y = random(height);
+  item.pos = { x: random(width), y: random(height) };
 }
 
 // ===== UI =====
@@ -146,17 +167,21 @@ function displayUI() {
 
 // ===== GAME STATE =====
 function checkGameState() {
-  if (score >= 10) gameState = "win";
-  if (health <= 0) gameState = "lose";
+  if (score >= 10) {
+    gameState = "win";
+  }
+  if (health <= 0) {
+    gameState = "lose";
+  }
 }
 
-// ===== END =====
-function showEnd(msg) {
+// ===== END SCREEN =====
+function showEnd(message) {
   background(0);
   fill(255);
   textAlign(CENTER);
   textSize(40);
-  text(msg, width / 2, height / 2);
+  text(message, width / 2, height / 2);
 
   textSize(20);
   text("Final Score: " + score, width / 2, height / 2 + 40);
