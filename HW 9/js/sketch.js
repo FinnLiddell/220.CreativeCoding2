@@ -27,14 +27,12 @@ let obstacleImg;
 
 function preload() {
 
-  // character animations
   idleFrames[0] = loadImage("images/idle1.png");
   idleFrames[1] = loadImage("images/idle2.png");
 
   walkFrames[0] = loadImage("images/walk1.png");
   walkFrames[1] = loadImage("images/walk2.png");
 
-  // food + obstacle images
   goodImg = loadImage("images/goodCoffee.png");
   badImg = loadImage("images/badCoffee.png");
   obstacleImg = loadImage("images/obstacle.png");
@@ -58,6 +56,7 @@ function setup() {
     g.img = goodImg;
     goodFood.add(g);
   }
+
   // BAD FOOD
   for (let i = 0; i < 3; i++) {
     let b = new Sprite(random(width), random(height), 40, 40);
@@ -72,6 +71,8 @@ function setup() {
     o.collider = "static";
     obstacles.add(o);
   }
+
+  currentFrames = idleFrames;
 }
 
 function draw() {
@@ -83,10 +84,8 @@ function draw() {
     handleMovement();
     updateAnimation();
 
-    // apply animation frame
     player.img = currentFrames[frameIndex];
 
-    // collisions
     player.collide(obstacles);
     player.overlaps(goodFood, collectGood);
     player.overlaps(badFood, hitBad);
@@ -109,19 +108,19 @@ function handleMovement() {
 
   let moving = false;
 
-  if (kb.pressing("left") || kb.pressing("a")) {
+  if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) {
     player.vel.x = -3;
     moving = true;
   }
-  if (kb.pressing("right") || kb.pressing("d")) {
+  if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) {
     player.vel.x = 3;
     moving = true;
   }
-  if (kb.pressing("up") || kb.pressing("w")) {
+  if (keyIsDown(UP_ARROW) || keyIsDown(87)) {
     player.vel.y = -3;
     moving = true;
   }
-  if (kb.pressing("down") || kb.pressing("s")) {
+  if (keyIsDown(DOWN_ARROW) || keyIsDown(83)) {
     player.vel.y = 3;
     moving = true;
   }
@@ -145,7 +144,7 @@ function updateAnimation() {
   }
 }
 
-// ===== COLLISION FUNCTIONS =====
+// ===== COLLISION =====
 function collectGood(player, item) {
   score++;
   item.pos = { x: random(width), y: random(height) };
@@ -174,13 +173,13 @@ function checkGameState() {
   }
 }
 
-// ===== END SCREEN =====
-function showEnd(message) {
+// ===== END =====
+function showEnd(msg) {
   background(0);
   fill(255);
   textAlign(CENTER);
   textSize(40);
-  text(message, width / 2, height / 2);
+  text(msg, width / 2, height / 2);
 
   textSize(20);
   text("Final Score: " + score, width / 2, height / 2 + 40);
