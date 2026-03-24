@@ -41,7 +41,7 @@ function preload() {
 }
 
 function setup() {
-  new Canvas(600, 400);
+  createCanvas(600, 400);
 
   // PLAYER
   player = new Sprite(300, 200, 60, 60);
