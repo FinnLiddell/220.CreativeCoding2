@@ -42,8 +42,22 @@ function preload() {
 
 function setup() {
   createCanvas(600, 400);
-  background(255, 0, 0);
-}
+
+  // PLAYER
+  player = new Sprite(300, 200, 60, 60);
+  player.img = idleFrames[0];
+
+  // GROUPS
+  goodFood = new Group();
+  badFood = new Group();
+  obstacles = new Group();
+
+  // GOOD FOOD
+  for (let i = 0; i < 5; i++) {
+    let g = new Sprite(random(width), random(height), 40, 40);
+    g.img = goodImg;
+    goodFood.add(g);
+  }
   // BAD FOOD
   for (let i = 0; i < 3; i++) {
     let b = new Sprite(random(width), random(height), 40, 40);
