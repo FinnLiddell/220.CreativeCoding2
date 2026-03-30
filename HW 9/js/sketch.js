@@ -1,8 +1,8 @@
 let player;
 
 let goodFood = [];
-let badFood = [];
-let obstacles = [];
+let enemies = [];
+let particles = [];
 
 let idleFrames = [];
 let walkFrames = [];
@@ -12,7 +12,6 @@ let frameDelay = 8;
 let frameTimer = 0;
 
 let score = 0;
-let health = 5;
 let gameState = "playing";
 
 function preload() {
@@ -32,25 +31,17 @@ function setup() {
 
   // GOOD FOOD
   for (let i = 0; i < 5; i++) {
-    let f = new Sprite(random(width), random(height), 30, 30);
+    let f = new Sprite(random(width), random(height), 20, 20);
     f.color = "green";
-    f.type = "good";
     goodFood.push(f);
   }
 
-  // BAD FOOD
-  for (let i = 0; i < 3; i++) {
-    let f = new Sprite(random(width), random(height), 30, 30);
-    f.color = "red";
-    f.type = "bad";
-    badFood.push(f);
-  }
-
-  // OBSTACLES
-  for (let i = 0; i < 3; i++) {
-    let o = new Sprite(random(width), random(height), 80, 40, "static");
-    o.color = "gray";
-    obstacles.push(o);
+  // ENEMIES (BAD OBJECTS)
+  for (let i = 0; i < 4; i++) {
+    let e = new Sprite(random(width), random(height), 30, 30);
+    e.color = "red";
+    e.health = 3;
+    enemies.push(e);
   }
 }
 
@@ -62,9 +53,7 @@ function draw() {
     handleMovement();
     animatePlayer();
 
-    // collisions
-    player.collides(obstacles);
-
+    // GOOD FOOD
     for (let f of goodFood) {
       if (player.overlaps(f)) {
         score++;
@@ -72,23 +61,47 @@ function draw() {
       }
     }
 
-    for (let f of badFood) {
-      if (player.overlaps(f)) {
-        health--;
-        f.pos = { x: random(width), y: random(height) };
+    // ATTACK ENEMIES
+    if (kb.presses("space")) {
+      for (let e of enemies) {
+        if (player.overlaps(e)) {
+          e.health--;
+
+          // CREATE PARTICLES
+          for (let i = 0; i < 10; i++) {
+            particles.push(new Particle(e.x, e.y));
+          }
+        }
+      }
+    }
+
+    // REMOVE DEAD ENEMIES
+    for (let i = enemies.length - 1; i >= 0; i--) {
+      if (enemies[i].health <= 0) {
+        enemies[i].remove();
+        enemies.splice(i, 1);
+      }
+    }
+
+    // UPDATE PARTICLES
+    for (let i = particles.length - 1; i >= 0; i--) {
+      particles[i].update();
+      particles[i].display();
+
+      if (particles[i].life <= 0) {
+        particles.splice(i, 1);
       }
     }
 
     displayUI();
-    checkGame();
+    checkWin();
 
   } else if (gameState === "win") {
     endScreen("YOU WIN");
-  } else if (gameState === "lose") {
-    endScreen("GAME OVER");
   }
 }
 
+// ===== MOVEMENT =====
 function handleMovement() {
   player.vel.x = 0;
   player.vel.y = 0;
@@ -115,6 +128,7 @@ function handleMovement() {
   player.moving = moving;
 }
 
+// ===== ANIMATION =====
 function animatePlayer() {
 
   frameTimer++;
@@ -130,18 +144,45 @@ function animatePlayer() {
   }
 }
 
+// ===== PARTICLE CLASS =====
+class Particle {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.vx = random(-2, 2);
+    this.vy = random(-2, 2);
+    this.life = 60;
+  }
+
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    this.life--;
+  }
+
+  display() {
+    noStroke();
+    fill(255, 150, 0, this.life * 4);
+    circle(this.x, this.y, 6);
+  }
+}
+
+// ===== UI =====
 function displayUI() {
   fill(0);
   textSize(20);
   text("Score: " + score, 20, 30);
-  text("Health: " + health, 20, 60);
+  text("Enemies: " + enemies.length, 20, 60);
 }
 
-function checkGame() {
-  if (score >= 10) gameState = "win";
-  if (health <= 0) gameState = "lose";
+// ===== WIN CONDITION =====
+function checkWin() {
+  if (enemies.length === 0) {
+    gameState = "win";
+  }
 }
 
+// ===== END =====
 function endScreen(msg) {
   background(0);
   fill(255);
