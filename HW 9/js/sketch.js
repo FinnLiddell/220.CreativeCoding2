@@ -1,163 +1,135 @@
-// ===== ANIMATION =====
-let idleFrames = [];
-let walkFrames = [];
-let currentFrames;
-
-let frameIndex = 0;
-let animationTimer = 0;
-let animationSpeed = 8;
-
-// ===== PLAYER =====
 let player;
 
-// ===== GROUPS =====
-let goodFood;
-let badFood;
-let obstacles;
+let goodFood = [];
+let badFood = [];
+let obstacles = [];
 
-// ===== GAME DATA =====
+let idleFrames = [];
+let walkFrames = [];
+
+let frameIndex = 0;
+let frameDelay = 8;
+let frameTimer = 0;
+
 let score = 0;
 let health = 5;
 let gameState = "playing";
 
-// ===== IMAGES =====
-let goodImg;
-let badImg;
-let obstacleImg;
-
 function preload() {
-
-  // character animations
   idleFrames[0] = loadImage("images/idle1.png");
   idleFrames[1] = loadImage("images/idle2.png");
 
   walkFrames[0] = loadImage("images/walk1.png");
   walkFrames[1] = loadImage("images/walk2.png");
-
-  // food + obstacle images
-  goodImg = loadImage("images/goodCoffee.png");
-  badImg = loadImage("images/badCoffee.png");
-  obstacleImg = loadImage("images/obstacle.png");
 }
 
 function setup() {
- createCanvas(600, 400);
+  new Canvas(600, 400);
 
   // PLAYER
-  player = new Sprite(300, 200, 60, 60);
-  player.img = idleFrames[0];
-
-  // GROUPS
-  goodFood = new Group();
-  badFood = new Group();
-  obstacles = new Group();
+  player = new Sprite(300, 200, 50, 50);
+  player.color = "blue";
 
   // GOOD FOOD
   for (let i = 0; i < 5; i++) {
-    let g = new Sprite(random(width), random(height), 40, 40);
-    g.img = goodImg;
-    goodFood.add(g);
+    let f = new Sprite(random(width), random(height), 30, 30);
+    f.color = "green";
+    f.type = "good";
+    goodFood.push(f);
   }
 
   // BAD FOOD
   for (let i = 0; i < 3; i++) {
-    let b = new Sprite(random(width), random(height), 40, 40);
-    b.img = badImg;
-    badFood.add(b);
+    let f = new Sprite(random(width), random(height), 30, 30);
+    f.color = "red";
+    f.type = "bad";
+    badFood.push(f);
   }
 
   // OBSTACLES
   for (let i = 0; i < 3; i++) {
-    let o = new Sprite(random(width), random(height), 80, 50);
-    o.img = obstacleImg;
-    o.collider = "static";
-    obstacles.add(o);
+    let o = new Sprite(random(width), random(height), 80, 40, "static");
+    o.color = "gray";
+    obstacles.push(o);
   }
 }
 
 function draw() {
-
-  background(230, 220, 200);
+  background(220);
 
   if (gameState === "playing") {
 
     handleMovement();
-    updateAnimation();
-
-    // apply animation frame
-    player.img = currentFrames[frameIndex];
+    animatePlayer();
 
     // collisions
-    player.collide(obstacles);
-    player.overlaps(goodFood, collectGood);
-    player.overlaps(badFood, hitBad);
+    player.collides(obstacles);
+
+    for (let f of goodFood) {
+      if (player.overlaps(f)) {
+        score++;
+        f.pos = { x: random(width), y: random(height) };
+      }
+    }
+
+    for (let f of badFood) {
+      if (player.overlaps(f)) {
+        health--;
+        f.pos = { x: random(width), y: random(height) };
+      }
+    }
 
     displayUI();
-    checkGameState();
+    checkGame();
 
   } else if (gameState === "win") {
-    showEnd("YOU WIN");
+    endScreen("YOU WIN");
   } else if (gameState === "lose") {
-    showEnd("GAME OVER");
+    endScreen("GAME OVER");
   }
 }
 
-// ===== MOVEMENT =====
 function handleMovement() {
-
   player.vel.x = 0;
   player.vel.y = 0;
 
   let moving = false;
 
-  if (kb.pressing("left") || kb.pressing("a")) {
-    player.vel.x = -3;
+  if (kb.pressing("a") || kb.pressing("left")) {
+    player.vel.x = -4;
     moving = true;
   }
-  if (kb.pressing("right") || kb.pressing("d")) {
-    player.vel.x = 3;
+  if (kb.pressing("d") || kb.pressing("right")) {
+    player.vel.x = 4;
     moving = true;
   }
-  if (kb.pressing("up") || kb.pressing("w")) {
-    player.vel.y = -3;
+  if (kb.pressing("w") || kb.pressing("up")) {
+    player.vel.y = -4;
     moving = true;
   }
-  if (kb.pressing("down") || kb.pressing("s")) {
-    player.vel.y = 3;
+  if (kb.pressing("s") || kb.pressing("down")) {
+    player.vel.y = 4;
     moving = true;
   }
 
-  if (moving) {
-    currentFrames = walkFrames;
+  player.moving = moving;
+}
+
+function animatePlayer() {
+
+  frameTimer++;
+  if (frameTimer >= frameDelay) {
+    frameIndex = (frameIndex + 1) % 2;
+    frameTimer = 0;
+  }
+
+  if (player.moving) {
+    player.img = walkFrames[frameIndex];
   } else {
-    currentFrames = idleFrames;
+    player.img = idleFrames[frameIndex];
   }
 }
 
-// ===== ANIMATION =====
-function updateAnimation() {
-
-  animationTimer++;
-
-  if (animationTimer >= animationSpeed) {
-    frameIndex++;
-    frameIndex %= currentFrames.length;
-    animationTimer = 0;
-  }
-}
-
-// ===== COLLISION FUNCTIONS =====
-function collectGood(player, item) {
-  score++;
-  item.pos = { x: random(width), y: random(height) };
-}
-
-function hitBad(player, item) {
-  health--;
-  item.pos = { x: random(width), y: random(height) };
-}
-
-// ===== UI =====
 function displayUI() {
   fill(0);
   textSize(20);
@@ -165,26 +137,16 @@ function displayUI() {
   text("Health: " + health, 20, 60);
 }
 
-// ===== GAME STATE =====
-function checkGameState() {
-  if (score >= 10) {
-    gameState = "win";
-  }
-  if (health <= 0) {
-    gameState = "lose";
-  }
+function checkGame() {
+  if (score >= 10) gameState = "win";
+  if (health <= 0) gameState = "lose";
 }
 
-// ===== END SCREEN =====
-function showEnd(message) {
+function endScreen(msg) {
   background(0);
   fill(255);
   textAlign(CENTER);
   textSize(40);
-  text(message, width / 2, height / 2);
-
-  textSize(20);
-  text("Final Score: " + score, width / 2, height / 2 + 40);
-
+  text(msg, width / 2, height / 2);
   noLoop();
 }
