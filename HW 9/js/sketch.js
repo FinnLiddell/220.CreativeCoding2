@@ -21,14 +21,12 @@ let gameState = "playing";
 
 // ===== LOAD =====
 function preload() {
-  // player animations
   idleFrames[0] = loadImage("images/idle1.png");
   idleFrames[1] = loadImage("images/idle2.png");
 
   walkFrames[0] = loadImage("images/walk1.png");
   walkFrames[1] = loadImage("images/walk2.png");
 
-  // food images
   goodImg = loadImage("images/good.png");
   badImg = loadImage("images/bad.png");
 }
@@ -40,7 +38,7 @@ function setup() {
   // PLAYER
   player = new Sprite(300, 200, 50, 50);
   player.img = idleFrames[0];
-  player.scale = 0.3; // FIX SIZE
+  player.scale = 0.3;
 
   // GOOD FOOD
   for (let i = 0; i < 5; i++) {
@@ -78,13 +76,12 @@ function draw() {
       }
     }
 
-    // ATTACK (SPACEBAR)
+    // ATTACK
     if (kb.presses("space")) {
       for (let e of enemies) {
         if (player.overlaps(e)) {
           e.health--;
 
-          // PARTICLES
           for (let i = 0; i < 10; i++) {
             particles.push(new Particle(e.x, e.y));
           }
