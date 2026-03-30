@@ -1,50 +1,66 @@
-let player;
+// ===== IMAGES =====
+let idleFrames = [];
+let walkFrames = [];
+let goodImg;
+let badImg;
 
+// ===== GAME OBJECTS =====
+let player;
 let goodFood = [];
 let enemies = [];
 let particles = [];
 
-let idleFrames = [];
-let walkFrames = [];
-
+// ===== ANIMATION =====
 let frameIndex = 0;
 let frameDelay = 8;
 let frameTimer = 0;
 
+// ===== GAME DATA =====
 let score = 0;
 let gameState = "playing";
 
+// ===== LOAD =====
 function preload() {
+  // player animations
   idleFrames[0] = loadImage("images/idle1.png");
   idleFrames[1] = loadImage("images/idle2.png");
 
   walkFrames[0] = loadImage("images/walk1.png");
   walkFrames[1] = loadImage("images/walk2.png");
+
+  // food images
+  goodImg = loadImage("images/good.png");
+  badImg = loadImage("images/bad.png");
 }
 
+// ===== SETUP =====
 function setup() {
   new Canvas(600, 400);
 
   // PLAYER
   player = new Sprite(300, 200, 50, 50);
-  player.color = "blue";
+  player.img = idleFrames[0];
+  player.scale = 0.3; // FIX SIZE
 
   // GOOD FOOD
   for (let i = 0; i < 5; i++) {
     let f = new Sprite(random(width), random(height), 20, 20);
-    f.color = "green";
+    f.img = goodImg;
+    f.scale = 0.2;
     goodFood.push(f);
   }
 
-  // ENEMIES (BAD OBJECTS)
+  // ENEMIES
   for (let i = 0; i < 4; i++) {
     let e = new Sprite(random(width), random(height), 30, 30);
-    e.color = "red";
+    e.img = badImg;
+    e.scale = 0.25;
     e.health = 3;
     enemies.push(e);
   }
 }
 
+// ===== DRAW =====
 function draw() {
   background(220);
 
@@ -57,17 +73,18 @@ function draw() {
     for (let f of goodFood) {
       if (player.overlaps(f)) {
         score++;
-        f.pos = { x: random(width), y: random(height) };
+        f.x = random(width);
+        f.y = random(height);
       }
     }
 
-    // ATTACK ENEMIES
+    // ATTACK (SPACEBAR)
     if (kb.presses("space")) {
       for (let e of enemies) {
         if (player.overlaps(e)) {
           e.health--;
 
-          // CREATE PARTICLES
+          // PARTICLES
           for (let i = 0; i < 10; i++) {
             particles.push(new Particle(e.x, e.y));
           }
@@ -83,7 +100,7 @@ function draw() {
       }
     }
 
-    // UPDATE PARTICLES
+    // PARTICLES
     for (let i = particles.length - 1; i >= 0; i--) {
       particles[i].update();
       particles[i].display();
@@ -130,8 +147,8 @@ function handleMovement() {
 
 // ===== ANIMATION =====
 function animatePlayer() {
-
   frameTimer++;
+
   if (frameTimer >= frameDelay) {
     frameIndex = (frameIndex + 1) % 2;
     frameTimer = 0;
@@ -175,7 +192,7 @@ function displayUI() {
   text("Enemies: " + enemies.length, 20, 60);
 }
 
-// ===== WIN CONDITION =====
+// ===== WIN =====
 function checkWin() {
   if (enemies.length === 0) {
     gameState = "win";
