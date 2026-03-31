@@ -9,7 +9,7 @@ let player;
 let goodFood = [];
 let enemies = [];
 let particles = [];
-let obstacles = [];
+let obstacles;
 
 // ===== GAME STATE =====
 let score = 0;
@@ -41,10 +41,10 @@ function preload() {
 function setup() {
   new Canvas(600, 400);
 
-  // PLAYER
-  player = new Sprite(300, 200, 80, 80); // BIGGER HITBOX
+  // PLAYER (smaller visual, bigger hitbox)
+  player = new Sprite(300, 200, 80, 80);
   player.img = idleFrames[0];
-  player.scale = 0.2; // SMALLER CHARACTER
+  player.scale = 0.2;
 
   // GOOD FOOD
   for (let i = 0; i < 5; i++) {
@@ -59,15 +59,17 @@ function setup() {
     let e = new Sprite(random(width), random(height), 30, 30);
     e.img = badImg;
     e.scale = 0.25;
-    e.health = 3; // NOW CLEAR
+    e.health = 3;
     enemies.push(e);
   }
 
-  // OBSTACLES
+  // OBSTACLES (FIXED WITH GROUP)
+  obstacles = new Group();
+
   for (let i = 0; i < 3; i++) {
     let o = new Sprite(random(width), random(height), 80, 40, "static");
     o.color = "gray";
-    obstacles.push(o);
+    obstacles.add(o);
   }
 }
 
@@ -80,6 +82,7 @@ function draw() {
     handleMovement();
     animatePlayer();
 
+    // COLLISION WITH WALLS
     player.collides(obstacles);
 
     // ===== GOOD FOOD =====
@@ -91,10 +94,10 @@ function draw() {
       }
     }
 
-    // ===== ENEMY DAMAGE (touch) =====
+    // ===== DAMAGE FROM ENEMIES =====
     for (let e of enemies) {
       if (player.overlaps(e)) {
-        health -= 0.01; // slow damage over time
+        health -= 0.02;
       }
     }
 
@@ -107,7 +110,6 @@ function draw() {
         if (dist(player.x, player.y, e.x, e.y) < 80) {
           e.health--;
 
-          // PARTICLES
           for (let i = 0; i < 15; i++) {
             particles.push(new Particle(e.x, e.y));
           }
@@ -123,9 +125,7 @@ function draw() {
       circle(player.x, player.y, 120);
 
       attackTimer--;
-      if (attackTimer <= 0) {
-        attacking = false;
-      }
+      if (attackTimer <= 0) attacking = false;
     }
 
     // ===== REMOVE DEAD ENEMIES =====
@@ -136,7 +136,7 @@ function draw() {
       }
     }
 
-    // ===== DRAW ENEMY HEALTH =====
+    // ===== ENEMY HEALTH DISPLAY =====
     fill(0);
     textSize(12);
     for (let e of enemies) {
@@ -206,7 +206,7 @@ function animatePlayer() {
   }
 }
 
-// ===== PARTICLES =====
+// ===== PARTICLE CLASS =====
 class Particle {
   constructor(x, y) {
     this.x = x;
@@ -224,7 +224,7 @@ class Particle {
 
   display() {
     noStroke();
-    fill(255, 100, 0, this.life * 4);
+    fill(255, 120, 0, this.life * 4);
     circle(this.x, this.y, 8);
   }
 }
@@ -240,18 +240,12 @@ function displayUI() {
 
 // ===== GAME CHECK =====
 function checkGame() {
-  if (score >= 10) {
-    gameState = "win";
-  }
-  if (health <= 0) {
-    gameState = "lose";
-  }
-  if (enemies.length === 0) {
-    gameState = "win";
-  }
+  if (score >= 10) gameState = "win";
+  if (health <= 0) gameState = "lose";
+  if (enemies.length === 0) gameState = "win";
 }
 
-// ===== END =====
+// ===== END SCREEN =====
 function endScreen(msg) {
   background(0);
   fill(255);
