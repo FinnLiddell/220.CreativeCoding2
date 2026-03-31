@@ -1,31 +1,26 @@
-// ===== IMAGES =====
+
 let idleFrames = [];
 let walkFrames = [];
 let goodImg;
 let badImg;
 
-// ===== OBJECTS =====
 let player;
 let goodFood = [];
 let enemies = [];
 let particles = [];
 let obstacles;
 
-// ===== GAME STATE =====
 let score = 0;
 let health = 5;
 let gameState = "playing";
 
-// ===== ANIMATION =====
 let frameIndex = 0;
 let frameDelay = 8;
 let frameTimer = 0;
 
-// ===== ATTACK =====
 let attacking = false;
 let attackTimer = 0;
 
-// ===== LOAD =====
 function preload() {
   idleFrames[0] = loadImage("images/idle1.png");
   idleFrames[1] = loadImage("images/idle2.png");
@@ -37,16 +32,13 @@ function preload() {
   badImg = loadImage("images/bad.png");
 }
 
-// ===== SETUP =====
 function setup() {
   new Canvas(600, 400);
 
-  // PLAYER (smaller visual, bigger hitbox)
   player = new Sprite(300, 200, 80, 80);
   player.img = idleFrames[0];
   player.scale = 0.2;
 
-  // GOOD FOOD
   for (let i = 0; i < 5; i++) {
     let f = new Sprite(random(width), random(height), 20, 20);
     f.img = goodImg;
@@ -54,7 +46,6 @@ function setup() {
     goodFood.push(f);
   }
 
-  // ENEMIES
   for (let i = 0; i < 4; i++) {
     let e = new Sprite(random(width), random(height), 30, 30);
     e.img = badImg;
@@ -63,7 +54,6 @@ function setup() {
     enemies.push(e);
   }
 
-  // OBSTACLES (FIXED WITH GROUP)
   obstacles = new Group();
 
   for (let i = 0; i < 3; i++) {
@@ -73,7 +63,6 @@ function setup() {
   }
 }
 
-// ===== DRAW =====
 function draw() {
   background(220);
 
@@ -82,10 +71,8 @@ function draw() {
     handleMovement();
     animatePlayer();
 
-    // COLLISION WITH WALLS
     player.collides(obstacles);
 
-    // ===== GOOD FOOD =====
     for (let f of goodFood) {
       if (player.overlaps(f)) {
         score++;
@@ -94,14 +81,12 @@ function draw() {
       }
     }
 
-    // ===== DAMAGE FROM ENEMIES =====
     for (let e of enemies) {
       if (player.overlaps(e)) {
         health -= 0.02;
       }
     }
 
-    // ===== ATTACK =====
     if (kb.presses("space")) {
       attacking = true;
       attackTimer = 10;
@@ -117,7 +102,6 @@ function draw() {
       }
     }
 
-    // ===== ATTACK VISUAL =====
     if (attacking) {
       noFill();
       stroke(255, 0, 0);
@@ -128,7 +112,6 @@ function draw() {
       if (attackTimer <= 0) attacking = false;
     }
 
-    // ===== REMOVE DEAD ENEMIES =====
     for (let i = enemies.length - 1; i >= 0; i--) {
       if (enemies[i].health <= 0) {
         enemies[i].remove();
@@ -136,14 +119,12 @@ function draw() {
       }
     }
 
-    // ===== ENEMY HEALTH DISPLAY =====
     fill(0);
     textSize(12);
     for (let e of enemies) {
       text(e.health, e.x - 5, e.y - 20);
     }
 
-    // ===== PARTICLES =====
     for (let i = particles.length - 1; i >= 0; i--) {
       particles[i].update();
       particles[i].display();
@@ -163,7 +144,6 @@ function draw() {
   }
 }
 
-// ===== MOVEMENT =====
 function handleMovement() {
   player.vel.x = 0;
   player.vel.y = 0;
@@ -190,7 +170,6 @@ function handleMovement() {
   player.moving = moving;
 }
 
-// ===== ANIMATION =====
 function animatePlayer() {
   frameTimer++;
 
@@ -206,7 +185,6 @@ function animatePlayer() {
   }
 }
 
-// ===== PARTICLE CLASS =====
 class Particle {
   constructor(x, y) {
     this.x = x;
@@ -229,7 +207,6 @@ class Particle {
   }
 }
 
-// ===== UI =====
 function displayUI() {
   fill(0);
   textSize(20);
@@ -238,14 +215,12 @@ function displayUI() {
   text("Enemies: " + enemies.length, 20, 90);
 }
 
-// ===== GAME CHECK =====
 function checkGame() {
   if (score >= 10) gameState = "win";
   if (health <= 0) gameState = "lose";
   if (enemies.length === 0) gameState = "win";
 }
 
-// ===== END SCREEN =====
 function endScreen(msg) {
   background(0);
   fill(255);
