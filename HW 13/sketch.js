@@ -3,24 +3,23 @@ let coffeeModel;
 let textures = [];
 let shapes = [];
 
-let angle = 0;
-
 function preload() {
-  coffeeModel = loadModel('coffee.obj', true);
+  // Load 3D model (OBJ + MTL auto-loads if linked)
+  coffeeModel = loadModel('models/coffee.obj', true);
 
-  // load 5 textures
-  textures[0] = loadImage('tex1.jpg');
-  textures[1] = loadImage('tex2.jpg');
-  textures[2] = loadImage('tex3.jpg');
-  textures[3] = loadImage('tex4.jpg');
-  textures[4] = loadImage('tex5.jpg');
+  // Load textures
+  textures[0] = loadImage('textures/tex1.jpg');
+  textures[1] = loadImage('textures/tex2.jpg');
+  textures[2] = loadImage('textures/tex3.jpg');
+  textures[3] = loadImage('textures/tex4.jpg');
+  textures[4] = loadImage('textures/tex5.jpg');
 }
 
 function setup() {
   createCanvas(800, 600, WEBGL);
   textAlign(CENTER, CENTER);
 
-  // create 5 orbiting objects
+  // Create orbiting objects using array
   for (let i = 0; i < 5; i++) {
     shapes.push({
       angle: random(TWO_PI),
@@ -38,17 +37,15 @@ function draw() {
   ambientLight(100);
   directionalLight(255, 255, 255, 0.5, 1, -0.5);
 
-  orbitControl(); // allows mouse drag to rotate scene
+  orbitControl(); // mouse drag interaction
 
   // --- CENTRAL MODEL ---
   push();
-  rotateY(angle * 0.5);
-  normalMaterial();
+  rotateY(frameCount * 0.01);
   scale(2);
+  normalMaterial(); // fallback if MTL fails
   model(coffeeModel);
   pop();
-
-  angle += 0.01;
 
   // --- ORBITING SHAPES ---
   for (let i = 0; i < shapes.length; i++) {
@@ -56,7 +53,6 @@ function draw() {
 
     push();
 
-    // orbit motion
     let x = cos(s.angle) * s.distance;
     let z = sin(s.angle) * s.distance;
 
@@ -67,7 +63,6 @@ function draw() {
 
     texture(textures[i]);
 
-    // different shapes
     if (s.type === 0) box(50);
     if (s.type === 1) sphere(30);
     if (s.type === 2) cone(30, 60);
@@ -80,15 +75,16 @@ function draw() {
     s.angle += s.speed;
   }
 
-  // --- TEXT ---
+  // --- TITLE ---
   push();
   resetMatrix();
-  translate(width / 2, 50);
+  translate(width / 2, 40);
   fill(255);
   textSize(28);
   text("Coffee Universe", 0, 0);
   pop();
 
+  // --- NAME ---
   push();
   resetMatrix();
   translate(width / 2, height - 30);
@@ -98,9 +94,8 @@ function draw() {
   pop();
 }
 
-// --- INTERACTION ---
+// --- CLICK INTERACTION ---
 function mousePressed() {
-  // move at least two objects randomly
   for (let i = 0; i < 2; i++) {
     shapes[i].distance = random(150, 300);
     shapes[i].yOffset = random(-150, 150);
