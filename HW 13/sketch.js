@@ -14,8 +14,8 @@ function preload() {
   textures[3] = loadImage('textures/tex4.jpg');
   textures[4] = loadImage('textures/tex5.jpg');
 
-  // FONT (fixes WEBGL text error)
-  myFont = loadFont('assets/Roboto-Regular.ttf');
+  // FONT
+  myFont = loadFont('assets/Lobster-Regular.ttf');
 }
 
 function setup() {
@@ -41,19 +41,15 @@ function draw() {
   ambientLight(100);
   directionalLight(255, 255, 255, 0.5, 1, -0.5);
 
-  orbitControl(); // mouse drag
+  orbitControl(); // mouse drag rotation
 
-  // --- CENTRAL MODEL (FIXED ORIENTATION) ---
+  // --- CENTRAL MODEL (FIX UPSIDE DOWN) ---
   push();
-
-  rotateX(PI); // 🔥 THIS FIXES UPSIDE DOWN MODEL
-
+  rotateX(PI); // flips model correctly
   rotateY(frameCount * 0.01);
   scale(2);
-
-  normalMaterial(); // fallback if texture fails
+  normalMaterial();
   model(coffeeModel);
-
   pop();
 
   // --- ORBITING SHAPES ---
@@ -86,9 +82,9 @@ function draw() {
   // --- TITLE ---
   push();
   resetMatrix();
-  translate(width / 2, 40);
-  fill(255);
-  textSize(28);
+  translate(width / 2, 50);
+  fill(255, 220, 180);
+  textSize(36);
   text("Coffee Universe", 0, 0);
   pop();
 
@@ -96,8 +92,8 @@ function draw() {
   push();
   resetMatrix();
   translate(width / 2, height - 30);
-  fill(180);
-  textSize(18);
+  fill(200);
+  textSize(20);
   text("By Finnegan Liddell", 0, 0);
   pop();
 }
