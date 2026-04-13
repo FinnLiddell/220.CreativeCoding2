@@ -1,25 +1,29 @@
 let coffeeModel;
-
 let textures = [];
 let shapes = [];
+let myFont;
 
 function preload() {
-  // Load 3D model (OBJ + MTL auto-loads if linked)
+  // MODEL
   coffeeModel = loadModel('models/coffee.obj', true);
 
-  // Load textures
+  // TEXTURES
   textures[0] = loadImage('textures/tex1.jpg');
   textures[1] = loadImage('textures/tex2.jpg');
   textures[2] = loadImage('textures/tex3.jpg');
   textures[3] = loadImage('textures/tex4.jpg');
   textures[4] = loadImage('textures/tex5.jpg');
+
+  // FONT (fixes WEBGL text error)
+  myFont = loadFont('assets/Roboto-Regular.ttf');
 }
 
 function setup() {
   createCanvas(800, 600, WEBGL);
+  textFont(myFont);
   textAlign(CENTER, CENTER);
 
-  // Create orbiting objects using array
+  // CREATE ORBITING OBJECTS
   for (let i = 0; i < 5; i++) {
     shapes.push({
       angle: random(TWO_PI),
@@ -37,14 +41,19 @@ function draw() {
   ambientLight(100);
   directionalLight(255, 255, 255, 0.5, 1, -0.5);
 
-  orbitControl(); // mouse drag interaction
+  orbitControl(); // mouse drag
 
-  // --- CENTRAL MODEL ---
+  // --- CENTRAL MODEL (FIXED ORIENTATION) ---
   push();
+
+  rotateX(PI); // 🔥 THIS FIXES UPSIDE DOWN MODEL
+
   rotateY(frameCount * 0.01);
   scale(2);
-  normalMaterial(); // fallback if MTL fails
+
+  normalMaterial(); // fallback if texture fails
   model(coffeeModel);
+
   pop();
 
   // --- ORBITING SHAPES ---
@@ -58,8 +67,8 @@ function draw() {
 
     translate(x, s.yOffset, z);
 
-    rotateX(frameCount * 0.01);
-    rotateY(frameCount * 0.01);
+    rotateX(frameCount * 0.02);
+    rotateY(frameCount * 0.02);
 
     texture(textures[i]);
 
@@ -71,7 +80,6 @@ function draw() {
 
     pop();
 
-    // update orbit
     s.angle += s.speed;
   }
 
