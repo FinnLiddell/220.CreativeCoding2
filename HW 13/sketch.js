@@ -79,23 +79,32 @@ function draw() {
     s.angle += s.speed;
   }
 
-  // --- TITLE ---
-  push();
-  resetMatrix();
-  translate(width / 2, 50);
-  fill(255, 220, 180);
-  textSize(36);
-  text("Coffee Universe", 0, 0);
-  pop();
+ // --- TITLE ---
+push();
+resetMatrix();
 
-  // --- NAME ---
-  push();
-  resetMatrix();
-  translate(width / 2, height - 30);
-  fill(200);
-  textSize(20);
-  text("By Finnegan Liddell", 0, 0);
-  pop();
+// move origin to top-left like normal 2D canvas
+translate(-width / 2, -height / 2);
+
+fill(255, 220, 180);
+textSize(36);
+textAlign(CENTER, CENTER);
+text("Coffee Universe", width / 2, 50);
+
+pop();
+
+// --- NAME ---
+push();
+resetMatrix();
+
+translate(-width / 2, -height / 2);
+
+fill(200);
+textSize(20);
+textAlign(CENTER, CENTER);
+text("By Finnegan Liddell", width / 2, height - 40);
+
+pop();
 }
 
 // --- CLICK INTERACTION ---
