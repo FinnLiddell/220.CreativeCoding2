@@ -83,10 +83,15 @@ function draw() {
 
 function mousePressed(){
 
-  // start music on interaction
+  // start music on first click
   if(!musicStarted){
     music.loop();
     musicStarted = true;
+  }
+
+  // restart game if dead
+  if(health <= 0){
+    resetGame();
   }
 
 }
@@ -218,5 +223,25 @@ function gameOver(){
 
   textSize(20);
   text("Final Score: " + score,width/2,height/2 + 40);
+
+  text("Click to Restart", width/2, height/2 + 80);
+
+}
+
+// ===== RESET GAME =====
+
+function resetGame(){
+
+  score = 0;
+  health = 3;
+
+  characterX = width / 2;
+  characterY = height / 2;
+
+  goodX = random(width);
+  goodY = random(height);
+
+  badX = random(width);
+  badY = random(height);
 
 }
