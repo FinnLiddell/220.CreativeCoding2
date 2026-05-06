@@ -1,5 +1,3 @@
-// audio.js
-
 let _actx = null;
 
 function getAudio() {
