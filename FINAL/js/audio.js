@@ -1,15 +1,13 @@
-// audio.js — Web Audio API sound effects
+// audio.js
 
-let audioCtx = null;
+let _actx = null;
 
 function getAudio() {
-  if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  return audioCtx;
+  if (!_actx) _actx = new (window.AudioContext || window.webkitAudioContext)();
+  return _actx;
 }
 
-function playTone(freq, type, dur, vol = 0.18, startFreq = null) {
+function tone(freq, type, dur, vol = 0.15, startFreq = null) {
   try {
     const ctx = getAudio();
     const osc = ctx.createOscillator();
@@ -30,13 +28,9 @@ function playTone(freq, type, dur, vol = 0.18, startFreq = null) {
   } catch (e) {}
 }
 
-function shootSound()      { playTone(880,  'square',   0.08, 0.12); }
-function collectSound()    { playTone(1200, 'sine',     0.18, 0.15, 600); }
-function explodeSound()    { playTone(80,   'sawtooth', 0.35, 0.2,  200); }
-function hitSound()        { playTone(150,  'sawtooth', 0.2,  0.18); }
-function enemyShootSound() { playTone(200,  'square',   0.1,  0.08); }
-function levelUpSound() {
-  playTone(880,  'sine', 0.1, 0.15);
-  setTimeout(() => playTone(1108, 'sine', 0.1, 0.15), 110);
-  setTimeout(() => playTone(1320, 'sine', 0.2, 0.15), 220);
+function sndGood()  { tone(600, 'sine',     0.2,  0.15, 300); }
+function sndBad()   { tone(120, 'sawtooth', 0.3,  0.2,  220); }
+function sndLevel() {
+  tone(660, 'sine', 0.1, 0.12);
+  setTimeout(() => tone(880, 'sine', 0.15, 0.12), 120);
 }
