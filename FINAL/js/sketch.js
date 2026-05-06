@@ -1,9 +1,8 @@
-// sketch.js — main game loop
-
 const W = 520, H = 460;
-window._GW = W;
-window._GH = H;
+window._GW    = W;
+window._GH    = H;
 window._LEVEL = 1;
+window.SPRITES = {};
 
 let score = 0, lives = 3, level = 1;
 let gameState = 'start';
@@ -39,6 +38,13 @@ function anyKey() { return Object.values(keys).some(v => v); }
 
 const sketch = (p) => {
 
+  // ── preload ────────────────────────────────────────────────────────────────
+  // Put your two images in assets/ and name them good.png and bad.png
+  p.preload = function () {
+    window.SPRITES.good = p.loadImage('assets/good.png');
+    window.SPRITES.bad  = p.loadImage('assets/bad.png');
+  };
+
   p.setup = function () {
     const cv = p.createCanvas(W, H);
     cv.parent('wrap');
@@ -62,7 +68,7 @@ const sketch = (p) => {
     if (gameState === 'over')  { drawOver(p);  return; }
     if (gameState === 'win')   { drawWin(p);   return; }
 
-    // screen flash on catch / hit
+    // screen flash
     if (flashT > 0) {
       p.noStroke();
       p.fill(flashOk ? 'rgba(180,230,160,0.35)' : 'rgba(220,80,80,0.3)');
@@ -72,7 +78,7 @@ const sketch = (p) => {
 
     guy.update(keys);
 
-    // spawn cups
+    // spawn
     spawnT++;
     const rate = Math.max(30, 72 - level * 9);
     if (spawnT > rate) { spawnT = 0; cups.push(new Cup()); }
@@ -86,18 +92,18 @@ const sketch = (p) => {
     }
     if (level >= 5 && score > levelScore(5)) gameState = 'win';
 
-    // collision
+    // cups + collision
     const cb = guy.catchBox();
     for (const c of cups) {
       c.update(); c.draw(p);
-      if (c.alive && c.y + 14 > cb.y && c.y - 14 < cb.y + cb.h &&
+      if (c.alive &&
+          c.y + 14 > cb.y && c.y - 14 < cb.y + cb.h &&
           c.x > cb.x && c.x < cb.x + cb.w) {
         c.alive = false;
         if (c.good) {
-          const pts = 10 + level * 2;
-          score += pts;
+          score += c.points;
           sndGood();
-          burst(particles, c.x, c.y, COL.cup_good, 8, '+' + pts);
+          burst(particles, c.x, c.y, COL.cup_good, 8, '+' + c.points);
           guy.catching = 40;
           flashOk = true; flashT = 8;
         } else {
@@ -116,12 +122,13 @@ const sketch = (p) => {
       pt.update();
       if (pt.txt) {
         const alpha = Math.floor(pt.life * 255).toString(16).padStart(2, '0');
-        p.noStroke(); p.fill(COL.ink + alpha);
+        p.noStroke();
+        p.fill(COL.ink + alpha);
         p.textSize(18); p.textAlign(p.CENTER);
         p.text(pt.txt, pt.x, pt.y);
       } else {
-        p.noStroke();
         const alpha = Math.floor(pt.life * 220).toString(16).padStart(2, '0');
+        p.noStroke();
         p.fill(pt.col + alpha);
         p.ellipse(pt.x, pt.y, pt.r * pt.life * 2, pt.r * pt.life * 2);
       }
@@ -137,18 +144,18 @@ const sketch = (p) => {
     updateHUD();
   };
 
-  // ── screens ───────────────────────────────────────────────────────────────
+  // ── screens ────────────────────────────────────────────────────────────────
 
   function drawStart(p) {
     p.textAlign(p.CENTER);
     p.noStroke(); p.fill(COL.ink);
     p.textSize(46); p.textStyle(p.BOLD);
-    p.text('☕ Coffee Catcher', W / 2, H / 2 - 90);
+    p.text('☕ Coffee Catcher', W / 2, H / 2 - 100);
     p.textStyle(p.NORMAL); p.textSize(19); p.fill(COL.mid);
-    p.text('catch the good coffee, dodge the gross stuff', W / 2, H / 2 - 52);
+    p.text('catch the good coffee, dodge the bad!', W / 2, H / 2 - 62);
 
     // demo stick guy
-    p.push(); p.translate(W / 2, H / 2 + 10);
+    p.push(); p.translate(W / 2, H / 2);
     p.stroke(COL.ink); p.strokeWeight(2.5); p.noFill();
     p.line(-22, 0, 22, 0);
     p.line(0, 0, 0, -22);
@@ -159,13 +166,12 @@ const sketch = (p) => {
     p.fill(COL.cream); p.ellipse(0, -30, 18, 18);
     p.pop();
 
-    p.textSize(16); p.fill(COL.ink); p.noStroke();
-    p.text('✓ warm coffees = points',  W / 2 - 70, H / 2 + 70);
-    p.text('✗ slime cups = lose a life', W / 2 + 70, H / 2 + 70);
+    p.textSize(15); p.fill(COL.mid); p.noStroke();
+    p.text('faster cups = more points!', W / 2, H / 2 + 58);
 
     const pulse = 0.7 + Math.sin(p.frameCount * 0.07) * 0.3;
     p.fill(`rgba(60,30,10,${pulse})`); p.textSize(21);
-    p.text('press any key to start', W / 2, H / 2 + 110);
+    p.text('press any key to start', W / 2, H / 2 + 100);
 
     if (anyKey()) { resetAll(); gameState = 'play'; }
   }
@@ -180,22 +186,4 @@ const sketch = (p) => {
     const pulse = 0.7 + Math.sin(p.frameCount * 0.07) * 0.3;
     p.fill(`rgba(60,30,10,${pulse})`); p.textSize(20);
     p.text('press any key to try again', W / 2, H / 2 + 50);
-    if (anyKey()) { resetAll(); gameState = 'play'; }
-  }
-
-  function drawWin(p) {
-    p.textAlign(p.CENTER);
-    p.noStroke(); p.fill(COL.ink);
-    p.textSize(44); p.textStyle(p.BOLD);
-    p.text('fully caffeinated! ☕', W / 2, H / 2 - 60);
-    p.textStyle(p.NORMAL); p.textSize(22); p.fill(COL.mid);
-    p.text('final score: ' + score, W / 2, H / 2 - 10);
-    const pulse = 0.7 + Math.sin(p.frameCount * 0.07) * 0.3;
-    p.fill(`rgba(60,30,10,${pulse})`); p.textSize(20);
-    p.text('press any key to play again', W / 2, H / 2 + 50);
-    if (anyKey()) { resetAll(); gameState = 'play'; }
-  }
-
-};
-
-new p5(sketch, document.getElementById('wrap'));
+    if (anyKey
