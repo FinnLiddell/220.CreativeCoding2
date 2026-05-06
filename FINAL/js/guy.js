@@ -1,27 +1,21 @@
-// guy.js — stick figure player
-
 const COL = {
-  bg:     '#fdf6e3',
-  paper:  '#f0e6d0',
-  ink:    '#3b2208',
-  mid:    '#7a5230',
-  light:  '#e8d5b0',
-  cream:  '#fffbe8',
-  good:   ['#c0792a','#5c3d1e','#a0522d','#8b6914'],
-  bad:    ['#4a7c59','#2d6e4e','#5b8a3c','#3d5a2a'],
+  bg:       '#fdf6e3',
+  ink:      '#3b2208',
+  mid:      '#7a5230',
+  cream:    '#fffbe8',
   cup_good: '#c0792a',
   cup_bad:  '#3d7a5a',
-  steam:  '#b8956a',
+  steam:    '#b8956a',
 };
 
 window.COL = COL;
 
 class Guy {
   constructor() {
-    this.x = window._GW / 2;
-    this.y = window._GH - 38;
-    this.w = 44;
-    this.step = 0;
+    this.x        = window._GW / 2;
+    this.y        = window._GH - 38;
+    this.w        = 44;
+    this.step     = 0;
     this.catching = 0;
   }
 
@@ -35,10 +29,9 @@ class Guy {
   }
 
   draw(p) {
-    const x = this.x, y = this.y;
     const bob = Math.sin(this.step) * 2;
     p.push();
-    p.translate(x, y + bob);
+    p.translate(this.x, this.y + bob);
     p.stroke(COL.ink);
     p.strokeWeight(2.5);
     p.noFill();
@@ -83,7 +76,7 @@ class Guy {
       p.line(-3, -26, 3, -26);
     }
 
-    // cup in hand
+    // cup in hand when catching
     if (this.catching > 10) {
       p.noStroke(); p.fill(COL.cup_good);
       p.rect(8, -8, 8, 6, 1);
