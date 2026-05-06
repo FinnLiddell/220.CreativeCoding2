@@ -55,7 +55,7 @@ const sketch = (p) => {
   p.keyReleased = () => { keys[p.key] = false; keys[p.keyCode] = false; };
 
   p.draw = function () {
-    // kraft paper background
+
     p.background(COL.bg);
     p.stroke('#d4c4a0'); p.strokeWeight(1);
     for (const l of bgLines) p.line(0, l, W, l);
@@ -66,7 +66,6 @@ const sketch = (p) => {
     if (gameState === 'over')  { drawOver(p);  return; }
     if (gameState === 'win')   { drawWin(p);   return; }
 
-    // screen flash
     if (flashT > 0) {
       p.noStroke();
       p.fill(flashOk ? 'rgba(180,230,160,0.35)' : 'rgba(220,80,80,0.3)');
@@ -76,12 +75,10 @@ const sketch = (p) => {
 
     guy.update(keys);
 
-    // spawn
     spawnT++;
     const rate = Math.max(30, 72 - level * 9);
     if (spawnT > rate) { spawnT = 0; cups.push(new Cup()); }
 
-    // level up
     if (level < 5 && score >= levelScore(level)) {
       level++;
       window._LEVEL = level;
@@ -90,7 +87,6 @@ const sketch = (p) => {
     }
     if (level >= 5 && score > levelScore(5)) gameState = 'win';
 
-    // cups + collision
     const cb = guy.catchBox();
     for (const c of cups) {
       c.update(); c.draw(p);
@@ -115,7 +111,6 @@ const sketch = (p) => {
     }
     cups = cups.filter(c => c.alive);
 
-    // particles
     for (const pt of particles) {
       pt.update();
       if (pt.txt) {
@@ -135,11 +130,9 @@ const sketch = (p) => {
 
     guy.draw(p);
 
-    // ground line
     p.stroke(COL.ink); p.strokeWeight(2.5);
     p.line(0, H - 20, W, H - 20);
 
-    // good.png icon in top-left of canvas next to score
     if (window.SPRITES && window.SPRITES.good) {
       p.imageMode(p.CENTER);
       p.image(window.SPRITES.good, 26, 14, 22, 22);
@@ -147,8 +140,6 @@ const sketch = (p) => {
 
     updateHUD();
   };
-
-  // ── screens ────────────────────────────────────────────────────────────────
 
   function drawStart(p) {
     p.textAlign(p.CENTER);
@@ -158,7 +149,6 @@ const sketch = (p) => {
     p.textStyle(p.NORMAL); p.textSize(19); p.fill(COL.mid);
     p.text('catch the good coffee, dodge the bad!', W / 2, H / 2 - 62);
 
-    // good.png preview in center
     if (window.SPRITES && window.SPRITES.good) {
       p.imageMode(p.CENTER);
       p.image(window.SPRITES.good, W / 2, H / 2, 80, 80);
