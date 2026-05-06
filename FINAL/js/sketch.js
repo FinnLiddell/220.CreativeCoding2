@@ -186,4 +186,22 @@ const sketch = (p) => {
     const pulse = 0.7 + Math.sin(p.frameCount * 0.07) * 0.3;
     p.fill(`rgba(60,30,10,${pulse})`); p.textSize(20);
     p.text('press any key to try again', W / 2, H / 2 + 50);
-    if (anyKey
+    if (anyKey()) { resetAll(); gameState = 'play'; }
+  }
+
+  function drawWin(p) {
+    p.textAlign(p.CENTER);
+    p.noStroke(); p.fill(COL.ink);
+    p.textSize(44); p.textStyle(p.BOLD);
+    p.text('fully caffeinated! ☕', W / 2, H / 2 - 60);
+    p.textStyle(p.NORMAL); p.textSize(22); p.fill(COL.mid);
+    p.text('final score: ' + score, W / 2, H / 2 - 10);
+    const pulse = 0.7 + Math.sin(p.frameCount * 0.07) * 0.3;
+    p.fill(`rgba(60,30,10,${pulse})`); p.textSize(20);
+    p.text('press any key to play again', W / 2, H / 2 + 50);
+    if (anyKey()) { resetAll(); gameState = 'play'; }
+  }
+
+};
+
+new p5(sketch, document.getElementById('wrap'));
