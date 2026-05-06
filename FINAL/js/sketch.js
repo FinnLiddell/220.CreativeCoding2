@@ -27,7 +27,7 @@ function resetAll() {
 }
 
 function updateHUD() {
-  document.getElementById('hud-score').textContent = '☕ score: ' + score;
+  document.getElementById('hud-score').textContent = 'score: ' + score;
   document.getElementById('hud-level').textContent = 'level ' + level;
   let h = '';
   for (let i = 0; i < 3; i++) h += i < lives ? '♥ ' : '♡ ';
@@ -38,8 +38,6 @@ function anyKey() { return Object.values(keys).some(v => v); }
 
 const sketch = (p) => {
 
-  // ── preload ────────────────────────────────────────────────────────────────
-  // Put your two images in assets/ and name them good.png and bad.png
   p.preload = function () {
     window.SPRITES.good = p.loadImage('assets/good.png');
     window.SPRITES.bad  = p.loadImage('assets/bad.png');
@@ -141,6 +139,12 @@ const sketch = (p) => {
     p.stroke(COL.ink); p.strokeWeight(2.5);
     p.line(0, H - 20, W, H - 20);
 
+    // good.png icon in top-left of canvas next to score
+    if (window.SPRITES && window.SPRITES.good) {
+      p.imageMode(p.CENTER);
+      p.image(window.SPRITES.good, 26, 14, 22, 22);
+    }
+
     updateHUD();
   };
 
@@ -150,21 +154,15 @@ const sketch = (p) => {
     p.textAlign(p.CENTER);
     p.noStroke(); p.fill(COL.ink);
     p.textSize(46); p.textStyle(p.BOLD);
-    p.text('☕ Coffee Catcher', W / 2, H / 2 - 100);
+    p.text('Coffee Catcher', W / 2, H / 2 - 100);
     p.textStyle(p.NORMAL); p.textSize(19); p.fill(COL.mid);
     p.text('catch the good coffee, dodge the bad!', W / 2, H / 2 - 62);
 
-    // demo stick guy
-    p.push(); p.translate(W / 2, H / 2);
-    p.stroke(COL.ink); p.strokeWeight(2.5); p.noFill();
-    p.line(-22, 0, 22, 0);
-    p.line(0, 0, 0, -22);
-    p.line(0, -14, -22, -6);
-    p.line(0, -14,  22, -6);
-    p.line(0, 0, -8, 14);
-    p.line(0, 0,  8, 14);
-    p.fill(COL.cream); p.ellipse(0, -30, 18, 18);
-    p.pop();
+    // good.png preview in center
+    if (window.SPRITES && window.SPRITES.good) {
+      p.imageMode(p.CENTER);
+      p.image(window.SPRITES.good, W / 2, H / 2, 80, 80);
+    }
 
     p.textSize(15); p.fill(COL.mid); p.noStroke();
     p.text('faster cups = more points!', W / 2, H / 2 + 58);
@@ -183,9 +181,15 @@ const sketch = (p) => {
     p.text('out of coffee :(', W / 2, H / 2 - 60);
     p.textStyle(p.NORMAL); p.textSize(22); p.fill(COL.mid);
     p.text('final score: ' + score, W / 2, H / 2 - 10);
+
+    if (window.SPRITES && window.SPRITES.good) {
+      p.imageMode(p.CENTER);
+      p.image(window.SPRITES.good, W / 2, H / 2 + 30, 50, 50);
+    }
+
     const pulse = 0.7 + Math.sin(p.frameCount * 0.07) * 0.3;
     p.fill(`rgba(60,30,10,${pulse})`); p.textSize(20);
-    p.text('press any key to try again', W / 2, H / 2 + 50);
+    p.text('press any key to try again', W / 2, H / 2 + 80);
     if (anyKey()) { resetAll(); gameState = 'play'; }
   }
 
@@ -193,12 +197,18 @@ const sketch = (p) => {
     p.textAlign(p.CENTER);
     p.noStroke(); p.fill(COL.ink);
     p.textSize(44); p.textStyle(p.BOLD);
-    p.text('fully caffeinated! ☕', W / 2, H / 2 - 60);
+    p.text('fully caffeinated!', W / 2, H / 2 - 60);
     p.textStyle(p.NORMAL); p.textSize(22); p.fill(COL.mid);
     p.text('final score: ' + score, W / 2, H / 2 - 10);
+
+    if (window.SPRITES && window.SPRITES.good) {
+      p.imageMode(p.CENTER);
+      p.image(window.SPRITES.good, W / 2, H / 2 + 30, 50, 50);
+    }
+
     const pulse = 0.7 + Math.sin(p.frameCount * 0.07) * 0.3;
     p.fill(`rgba(60,30,10,${pulse})`); p.textSize(20);
-    p.text('press any key to play again', W / 2, H / 2 + 50);
+    p.text('press any key to play again', W / 2, H / 2 + 80);
     if (anyKey()) { resetAll(); gameState = 'play'; }
   }
 
