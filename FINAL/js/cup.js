@@ -1,5 +1,3 @@
-// Cup speed range per level — used to calculate points on catch
-// Points = floor(vy * 10), so a fast cup is worth more
 
 const SPEED_MIN = 1.4;
 const SPEED_MAX = 3.2;
@@ -10,11 +8,9 @@ class Cup {
     this.y      = -30;
     this.good   = Math.random() > 0.38;
 
-    // Speed scales with level, with random variance
     const levelBoost = (window._LEVEL - 1) * 0.35;
     this.vy     = SPEED_MIN + Math.random() * (SPEED_MAX - SPEED_MIN) + levelBoost;
 
-    // Points based on speed — faster = more points
     this.points = Math.max(5, Math.floor(this.vy * 10));
 
     this.rot    = 0;
@@ -42,7 +38,6 @@ class Cup {
     this.good ? this._drawGood(p) : this._drawBad(p);
     p.pop();
 
-    // Speed indicator — small number above fast cups so player knows it's worth more
     if (this.vy > 2.5) {
       p.noStroke();
       p.fill(this.good ? COL.cup_good : COL.cup_bad);
@@ -57,7 +52,7 @@ class Cup {
     if (img) {
       p.image(img, 0, 0, 48, 56);
     } else {
-      // fallback shape
+
       p.fill(COL.cup_good); p.stroke(COL.ink); p.strokeWeight(2);
       p.beginShape();
       p.vertex(-10,  14); p.vertex(10,  14);
@@ -81,7 +76,7 @@ class Cup {
     if (img) {
       p.image(img, 0, 0, 48, 56);
     } else {
-      // fallback shape
+
       p.fill('#b8d4b0'); p.stroke(COL.ink); p.strokeWeight(2);
       p.beginShape();
       p.vertex(-10, 14); p.vertex(10,  14);
