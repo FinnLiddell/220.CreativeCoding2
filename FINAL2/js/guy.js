@@ -36,107 +36,115 @@ class Guy {
       this.x += spd;
     }
 
-    this.x = Math.max(
+    this.x = constrain(
+      this.x,
       this.w / 2 + 4,
-      Math.min(window._GW - this.w / 2 - 4, this.x)
+      window._GW - this.w / 2 - 4
     );
 
-    this.step = (this.step + 0.18) % (Math.PI * 2);
+    this.step = (this.step + 0.18) % TWO_PI;
 
     if (this.catching > 0) {
       this.catching--;
     }
   }
 
-  draw(p) {
+  draw() {
 
-    const bob = Math.sin(this.step) * 2;
+    const bob = sin(this.step) * 2;
 
-    p.push();
+    push();
 
-    p.translate(this.x, this.y + bob);
+    translate(this.x, this.y + bob);
 
-    p.stroke(COL.ink);
-    p.strokeWeight(2.5);
+    stroke(COL.ink);
+    strokeWeight(2.5);
 
-    p.noFill();
+    noFill();
 
-    p.stroke(COL.mid);
-    p.strokeWeight(3);
+    // tray
+    stroke(COL.mid);
+    strokeWeight(3);
 
-    p.line(-22, 0, 22, 0);
+    line(-22, 0, 22, 0);
 
-    p.stroke(COL.ink);
-    p.strokeWeight(2);
+    stroke(COL.ink);
+    strokeWeight(2);
 
-    p.line(-22, 0, -26, -5);
-    p.line(22, 0, 26, -5);
+    line(-22, 0, -26, -5);
+    line(22, 0, 26, -5);
 
-    p.stroke(COL.ink);
-    p.strokeWeight(2.5);
+    // torso
+    stroke(COL.ink);
+    strokeWeight(2.5);
 
-    p.line(0, 0, 0, -22);
+    line(0, 0, 0, -22);
 
-    const lw = Math.sin(this.step) * 6;
+    // legs
+    const lw = sin(this.step) * 6;
 
-    p.line(0, 0, -8 + lw, 14);
-    p.line(0, 0, 8 - lw, 14);
+    line(0, 0, -8 + lw, 14);
+    line(0, 0, 8 - lw, 14);
 
-    p.line(-8 + lw, 14, -13 + lw, 18);
-    p.line(8 - lw, 14, 13 - lw, 18);
+    line(-8 + lw, 14, -13 + lw, 18);
+    line(8 - lw, 14, 13 - lw, 18);
 
-    p.line(0, -14, -22, -6);
-    p.line(0, -14, 22, -6);
+    // arms
+    line(0, -14, -22, -6);
+    line(0, -14, 22, -6);
 
-    p.fill(COL.cream);
+    // head
+    fill(COL.cream);
 
-    p.stroke(COL.ink);
-    p.strokeWeight(2);
+    stroke(COL.ink);
+    strokeWeight(2);
 
-    p.ellipse(0, -30, 18, 18);
+    ellipse(0, -30, 18, 18);
 
-    p.noStroke();
-    p.fill(COL.ink);
+    // face
+    noStroke();
+    fill(COL.ink);
 
     if (this.catching > 0) {
 
-      p.ellipse(-3, -30, 3, 3);
-      p.ellipse(3, -30, 3, 3);
+      ellipse(-3, -30, 3, 3);
+      ellipse(3, -30, 3, 3);
 
-      p.noFill();
+      noFill();
 
-      p.stroke(COL.ink);
-      p.strokeWeight(1.5);
+      stroke(COL.ink);
+      strokeWeight(1.5);
 
-      p.arc(0, -28, 8, 6, 0, Math.PI);
+      arc(0, -28, 8, 6, 0, PI);
 
     } else {
 
-      p.ellipse(-3, -30, 2, 2);
-      p.ellipse(3, -30, 2, 2);
+      ellipse(-3, -30, 2, 2);
+      ellipse(3, -30, 2, 2);
 
-      p.noFill();
+      noFill();
 
-      p.stroke(COL.ink);
-      p.strokeWeight(1.5);
+      stroke(COL.ink);
+      strokeWeight(1.5);
 
-      p.line(-3, -26, 3, -26);
+      line(-3, -26, 3, -26);
     }
 
+    // cup in hand
     if (this.catching > 10) {
 
-      p.noStroke();
+      noStroke();
 
-      p.fill(COL.cup_good);
+      fill(COL.cup_good);
 
-      p.rect(8, -8, 8, 6, 1);
+      rect(8, -8, 8, 6, 1);
 
-      p.fill(COL.steam);
+      fill(COL.steam);
 
-      p.ellipse(12, -9, 4, 3);
+      ellipse(12, -9, 4, 3);
     }
 
-    p.pop();
+    pop();
   }
 
   catchBox() {
