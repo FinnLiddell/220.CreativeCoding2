@@ -5,32 +5,32 @@ class Cup {
 
   constructor() {
 
-    this.x = 30 + Math.random() * (window._GW - 60);
+    this.x = 30 + random(window._GW - 60);
 
     this.y = -30;
 
-    this.good = Math.random() > 0.38;
+    this.good = random() > 0.38;
 
     const levelBoost = (window._LEVEL - 1) * 0.35;
 
     this.vy =
       SPEED_MIN +
-      Math.random() * (SPEED_MAX - SPEED_MIN) +
+      random(SPEED_MAX - SPEED_MIN) +
       levelBoost;
 
-    this.points = Math.max(5, Math.floor(this.vy * 10));
+    this.points = max(5, floor(this.vy * 10));
 
     this.rot = 0;
 
-    this.rotS = (Math.random() - 0.5) * 0.04;
+    this.rotS = random(-0.04, 0.04);
 
     this.alive = true;
 
-    this.wobble = Math.random() * Math.PI * 2;
+    this.wobble = random(TWO_PI);
 
     this.size = this.good
-      ? (0.9 + Math.random() * 0.3)
-      : (0.85 + Math.random() * 0.25);
+      ? random(0.9, 1.2)
+      : random(0.85, 1.1);
   }
 
   update() {
@@ -46,37 +46,38 @@ class Cup {
     }
   }
 
-  draw(p) {
+  draw() {
 
-    p.push();
+    push();
 
-    p.translate(this.x, this.y);
+    translate(this.x, this.y);
 
-    p.rotate(this.rot + Math.sin(this.wobble) * 0.06);
+    rotate(this.rot + sin(this.wobble) * 0.06);
 
-    p.scale(this.size);
+    scale(this.size);
 
-    p.imageMode(p.CENTER);
+    imageMode(CENTER);
 
     if (this.good) {
-      p.image(window.SPRITES.good, 0, 0, 48, 56);
+      image(window.SPRITES.good, 0, 0, 48, 56);
     } else {
-      p.image(window.SPRITES.bad, 0, 0, 48, 56);
+      image(window.SPRITES.bad, 0, 0, 48, 56);
     }
 
-    p.pop();
+    pop();
 
+    // point value
     if (this.vy > 2.5) {
 
-      p.noStroke();
+      noStroke();
 
-      p.fill(this.good ? COL.cup_good : COL.cup_bad);
+      fill(this.good ? COL.cup_good : COL.cup_bad);
 
-      p.textSize(13);
+      textSize(13);
 
-      p.textAlign(p.CENTER);
+      textAlign(CENTER);
 
-      p.text('+' + this.points, this.x, this.y - 30);
+      text('+' + this.points, this.x, this.y - 30);
     }
   }
 }
