@@ -62,7 +62,6 @@ class Guy {
 
     noFill();
 
-    // tray
     stroke(COL.mid);
     strokeWeight(3);
 
@@ -74,13 +73,11 @@ class Guy {
     line(-22, 0, -26, -5);
     line(22, 0, 26, -5);
 
-    // torso
     stroke(COL.ink);
     strokeWeight(2.5);
 
     line(0, 0, 0, -22);
 
-    // legs
     const lw = sin(this.step) * 6;
 
     line(0, 0, -8 + lw, 14);
@@ -89,11 +86,9 @@ class Guy {
     line(-8 + lw, 14, -13 + lw, 18);
     line(8 - lw, 14, 13 - lw, 18);
 
-    // arms
     line(0, -14, -22, -6);
     line(0, -14, 22, -6);
 
-    // head
     fill(COL.cream);
 
     stroke(COL.ink);
@@ -101,7 +96,6 @@ class Guy {
 
     ellipse(0, -30, 18, 18);
 
-    // face
     noStroke();
     fill(COL.ink);
 
@@ -130,7 +124,6 @@ class Guy {
       line(-3, -26, 3, -26);
     }
 
-    // cup in hand
     if (this.catching > 10) {
 
       noStroke();
