@@ -66,7 +66,6 @@ class Cup {
 
     pop();
 
-    // point value
     if (this.vy > 2.5) {
 
       noStroke();
